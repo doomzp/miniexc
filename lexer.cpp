@@ -9,11 +9,21 @@ namespace Get {
 
     bool strings (char c) { return c != '"'; }
     bool numbers (char c) { return isdigit(c) || c == '.'; }
+    bool copies (char c ) { return isdigit(c) || islower(c); }
 
     void checkNumber (std::string* num) {
         unsigned npoints = (unsigned) std::count(num->begin(), num->end(), '.');
         if ( !npoints || npoints == 1 ) { return; }
         *num = "number_def!";
+    }
+
+    void checkCopies (std::string *copy) {
+        *copy = copy->substr(1);    
+        bool digitpart = std::any_of(copy->begin(), copy->end(), isdigit);
+        bool lowerpart = std::any_of(copy->begin(), copy->end(), islower);
+
+        if ( digitpart && lowerpart ) { return; }
+        *copy = "copies_def!";
     }
 
     void get (std::string* data, std::size_t* pos, Get::getif condition) {
@@ -25,6 +35,7 @@ namespace Get {
 
         if ( condition == Get::strings ) { *data = data->substr(1); }
         if ( condition == Get::numbers ) { Get::checkNumber(data); }
+        if ( condition == Get::copies ) { Get::checkCopies(data); }
     }
 }
 
@@ -74,5 +85,10 @@ TokenType lexer_type (std::string *data, std::size_t* pos) {
         Get::get(data, pos, Get::numbers);
         return TokenType::number;
     }
+    if ( cchar == '@' && (islower(nchar) || isdigit(nchar)) ) {
+        Get::get(data, pos, Get::copies);
+        return TokenType::copies;
+    }
+
     return TokenType::unknown;
 }

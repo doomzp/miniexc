@@ -8,7 +8,8 @@ enum class TokenType : unsigned char {
     number,
     string,
     unknown,
-    error
+    error,
+    copies
 };
 
 typedef struct Token {
@@ -22,10 +23,15 @@ typedef struct Cell {
     TokenType type;
 } Cell;
 
+class Copies {  
+    public:
+    static void start (Cell* cell);
+    static Cell* getCell (const std::string &pos);
+};
+
 void parser_newline ();
 void parser_new_cell ();
 void parser_new_token (const std::string &token, const TokenType type);
 void parser_run ();
-void parser_execute_cell (Cell* cell);
 
 #endif
