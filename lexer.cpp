@@ -40,6 +40,7 @@ void lexer_read (std::ifstream *table) {
     }
 
     table->close();
+    parser_run();
 }
 
 void lexer_seek () {

@@ -25,5 +25,7 @@ typedef struct Cell {
 void parser_newline ();
 void parser_new_cell ();
 void parser_new_token (const std::string &token, const TokenType type);
+void parser_run ();
+void parser_execute_cell (Cell* cell);
 
 #endif

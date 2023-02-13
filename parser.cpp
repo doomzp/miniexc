@@ -3,11 +3,20 @@
 namespace Table {
     std::vector<unsigned> marks { 0 };
     std::vector<Cell> cells;
+
+    bool savesConstant (const TokenType type) {
+        return type == TokenType::number || type == TokenType::string || type == TokenType::unknown || type == TokenType::error;
+    }
+
+    void doThis (Cell* cell) {
+        if ( !Table::savesConstant(cell->type) ) {}
+        std::cout << cell->data << " | ";
+    }
 }
 
 void parser_newline () {
     if ( Table::cells.empty() ) { return; }
-    Table::marks.push_back(Table::cells.size() - 1);
+    Table::marks.push_back(Table::cells.size());
 }
 
 void parser_new_cell () {
@@ -30,3 +39,15 @@ void parser_new_token (const std::string &token, const TokenType type) {
         .type = type 
     });
 }
+
+void parser_run () {
+    unsigned midx = 0;
+    for (unsigned cidx = 0; cidx < Table::cells.size(); cidx++) {
+        if ( cidx == Table::marks[midx] ) {
+            std::cout << '\n';
+            midx++;
+        }
+        Table::doThis(&Table::cells.at(cidx));
+    }
+}
+
