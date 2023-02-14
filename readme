@@ -1,0 +1,30 @@
+SimpleCell:
+	This idea was taken from a Tsoing video where he tries to implement something like Excel but very very
+	much simpler, and then i try to implement what he did it.
+
+	The program just needs a file which must contain a table that gotta looks like:
+	| value | value | value
+	| value | value
+	       ...
+	| value | value | value
+	| value | value
+
+	The separator between cells is '|' symbol and it cannot be skiped since all table
+	will be just only one cell with a lot of tokens.
+
+	The program is able to perform copy value from another cells without entering into a loop
+	and do arithmetic.
+
+	Errors:
+	There's only one error which will stop the program at all, it's when trying to get a cell
+	but it's outta table's range.
+
+	* number_def!
+	* copies_def!
+	* loop_copying!
+	* empty_expression!
+	* number_ref!
+	* operator_ref!
+	* divby_zero!
+
+Juan Diego Patiño Muñoz - Feb.14.2023.
