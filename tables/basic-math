@@ -1,0 +1,4 @@
+| "Doing very very basic math"
+| =1 + 4 * 4 / 4 | =@a1 + 5 ~ 1
+| =              | =@a0 + 5
+| =4 5 5

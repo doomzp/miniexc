@@ -12,6 +12,7 @@ namespace Table {
 
     void doThis (Cell* cell) {
         switch ( cell->type ) {
+            case TokenType::equ : { BasicMath::start(cell); break; }
             case TokenType::copies : { Copies::start(cell); break; }
         }
     }
@@ -64,7 +65,7 @@ void Copies::start (Cell* cell) {
     static Cell* beginsin = nullptr;
     if ( !beginsin ) { beginsin = cell; }
 
-    Cell* copy = Copies::getCell(cell->data);
+    Cell* copy = Copies::get_cell(cell->data);
     if ( copy == beginsin && copy->type == TokenType::copies ) {
         Table::setError(copy, "loop_copying!");
     }
@@ -75,11 +76,10 @@ void Copies::start (Cell* cell) {
     beginsin = nullptr;
 }
 
-Cell* Copies::getCell (const std::string &pos) {
+Cell* Copies::get_cell (const std::string &pos) {    
     unsigned row = 0, col = 0;
     for (char c : pos) {
-        isdigit(c) ? row += (c - __0_ascii_pos):
-                     col += (c - __a_ascii_pos);
+        isdigit(c) ? row += (c - __0_ascii_pos) : col += (c - __a_ascii_pos);
     }
 
     /* The parser saves the cells in a single vector, that means ain't rows, just "columns".
@@ -98,9 +98,78 @@ Cell* Copies::getCell (const std::string &pos) {
      *      Get(h7) = @2a = marks[2] + 0 = 7 :: cells[7] = h7.
      * */
     unsigned pointingto = Table::marks[row] + col;
-    if ( row >= Table::marks.size() || pointingto >= Table::cells.size() ) {
+    if ( pointingto >= Table::cells.size() ) {
         std::cout << "E: Trying to get '@" << pos << "' but it's out of range :c.\n";
         exit(1);
     }
     return &Table::cells.at(pointingto);
+}
+
+void BasicMath::start (Cell* cell) {
+    if ( cell->info.size() == 1 ) {
+        Table::setError(cell, "empty_expression!");
+        return;
+    }
+    
+    std::vector<double> numbers;
+    std::vector<TokenType> operators;
+    bool isnumber = true;
+    TokenType lastop = TokenType::unknown;
+
+    for (Token const &token : cell->info) {
+        if ( token.type == TokenType::equ ) { continue; }
+        if ( isnumber ) {
+            double newnum = BasicMath::number(cell, token);
+            if ( lastop ==  TokenType::div || lastop == TokenType::mul ) {
+                newnum = BasicMath::do_higher(cell, numbers.back(), newnum, lastop);
+                numbers.pop_back();
+                operators.pop_back();
+            }
+            numbers.push_back(newnum);
+            lastop = TokenType::unknown;
+        }
+        else {
+            BasicMath::moperator(cell, token.type);
+            operators.push_back(token.type);
+            lastop = token.type;
+        }
+
+        if ( cell->type == TokenType::error ) { return; }
+        isnumber = !isnumber;
+    }
+
+    for (unsigned i = 1; i < numbers.size(); i++) {
+        if ( operators.at(i - 1) == TokenType::add ) { numbers.front() += numbers.at(i); }
+        else { numbers.front() -= numbers.at(i); }
+    }
+
+    cell->type = TokenType::number;
+    cell->data = std::to_string(numbers.front());
+}
+
+double BasicMath::number (Cell* cell, const Token token) {   
+    if ( token.type == TokenType::number ) { return stod(token.data); }
+    if ( token.type == TokenType::copies ) {
+        Cell* thatcell = Copies::get_cell(token.data);
+        if ( thatcell->type == TokenType::number ) {
+            return stod(thatcell->data);
+        }
+    }
+    
+    Table::setError(cell, "number_ref!");
+    return 0;
+}
+
+void BasicMath::moperator (Cell* cell, const TokenType type) {
+    switch ( type ) {
+        case TokenType::sub : case TokenType::div :
+        case TokenType::mul : case TokenType::add : { return; }
+    }
+    Table::setError(cell, "operator_ref!");
+}
+
+double BasicMath::do_higher (Cell* cell, double p1, double p2, TokenType type) {
+    if ( type == TokenType::mul ) { return p1 * p2; }
+    if ( !p2 ) { Table::setError(cell, "divby_zero!"); }
+    return p1 / p2;
 }

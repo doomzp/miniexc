@@ -4,12 +4,18 @@
 #include <iostream>
 #include <vector>
 
-enum class TokenType : unsigned char {  
+typedef signed char sigchr;
+enum class TokenType : sigchr {
     number,
     string,
     unknown,
     error,
-    copies
+    copies,
+    add,
+    sub,
+    div,
+    mul,
+    equ,
 };
 
 typedef struct Token {
@@ -26,7 +32,15 @@ typedef struct Cell {
 class Copies {  
     public:
     static void start (Cell* cell);
-    static Cell* getCell (const std::string &pos);
+    static Cell* get_cell (const std::string &pos);
+};
+
+class BasicMath {
+    public:
+    static void start (Cell* cell);
+    static double number (Cell* cell, const Token token);
+    static void moperator (Cell* cell, const TokenType type);
+    static double do_higher (Cell* cell, double p1, double p2, TokenType type);
 };
 
 void parser_newline ();

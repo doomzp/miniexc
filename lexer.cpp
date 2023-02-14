@@ -77,6 +77,14 @@ TokenType lexer_type (std::string *data, std::size_t* pos) {
     const char cchar = data->back();
     const char nchar = G::row[*pos + 1];
 
+    switch ( cchar ) {
+        case '+' : { return TokenType::add; break; }
+        case '~' : { return TokenType::sub; break; }
+        case '*' : { return TokenType::mul; break; }
+        case '/' : { return TokenType::div; break; }
+        case '=' : { return TokenType::equ; break; }
+    }
+
     if ( cchar == '"' ) {
         Get::get(data, pos, Get::strings);
         return TokenType::string;
