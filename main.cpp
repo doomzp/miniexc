@@ -1,8 +1,7 @@
 #include "lexer.hpp"
 
 void usage () {
-    puts("Usage: This programs just takes one argument.");
-    puts("    * The path to the file which contains the table.");
+    puts("U: Pass the table file as argument.");
     exit(0);
 }
 

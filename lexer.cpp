@@ -49,7 +49,6 @@ void lexer_read (std::ifstream *table) {
             lexer_seek();
         }
     }
-
     table->close();
     parser_run();
 }
@@ -97,6 +96,5 @@ TokenType lexer_type (std::string *data, std::size_t* pos) {
         Get::get(data, pos, Get::copies);
         return TokenType::copies;
     }
-
     return TokenType::unknown;
 }

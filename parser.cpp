@@ -6,8 +6,10 @@ namespace Table {
     std::vector<unsigned> marks { 0 };
     std::vector<Cell> cells;
 
+    /* Does not perform any operation. */
     bool savesConstant (const TokenType type) {
-        return type == TokenType::number || type == TokenType::string || type == TokenType::unknown || type == TokenType::error;
+        return type == TokenType::number || type == TokenType::string ||
+               type == TokenType::unknown || type == TokenType::error;
     }
 
     void doThis (Cell* cell) {
@@ -70,6 +72,9 @@ void Copies::start (Cell* cell) {
         Table::setError(copy, "loop_copying!");
     }
 
+    /* If the cell to be copied has an operation to perform, that'll
+     * be done first, then copy the value of that operation.
+     * */
     Table::doThis(copy);
     cell->data = copy->data;
     cell->type = copy->type;
