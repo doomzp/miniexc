@@ -1,5 +1,5 @@
 simple cell:
-	This idea was taken from a Tsoing video where he tries to implement something
+    This idea was taken from a Tsoing video where he tries to implement something
     like Excel but very very much simpler, and then i try to implement what he did
     even more simple lol.
 
@@ -10,14 +10,14 @@ simple cell:
 	| value | value | value
 	| value | value
 
-	The separator between cells is '|' symbol and it cannot be skiped since it is,
+    The separator between cells is '|' symbol and it cannot be skiped since it is,
     all table will be just a only one cell with a lot of tokens.
 
 	The program is able to perform copy value from another cells without entering
     into a loop and do arithmetic.
 
-	Errors:
-	There's only one error which will stop the program at all. It's when the program
+    Errors:
+    There's only one error which will stop the program at all. It's when the program
     is tryna get a cell but it's outta table's range, the other ones are:
 	* number_def!
 	* copies_def!
